@@ -14,3 +14,8 @@ Manufacturer
 ------------
 
 Although the "item manufacturer" field is not required for reporting it is being stored along the "item name" since the sample data suggests both fields form an identity (e.g. all "acme journals" are priced $5.50 but the only "PaperWorks journal" is priced $4.50).
+
+Database model
+--------------
+
+Date and time were split to make reporting easier
