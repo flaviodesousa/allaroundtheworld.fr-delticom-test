@@ -1,2 +1,16 @@
 NOTES
 =====
+
+General Sanitization and Handling of Inconsistencies
+----------------------------------------------------
+
+Steps were taken to avoid changing data coming from the CSV files. So the data coming from the CSV file is autoritative even when suspicious inconsistencies arise. If, in the future, we get better heuristics on data sanitization, having all the data available will make it easier to fix the database.
+
+Exceptions are:
+- spaces around field delimiters are discarded (e.g. ',John ,' is parsed as ',John,')
+- quotes around fields are discarded (e.g. '"pen, ball point"' is parsed as 'pen, ball point')
+
+Manufacturer
+------------
+
+Although the "item manufacturer" field is not required for reporting it is being stored along the "item name" since the sample data suggests both fields form an identity (e.g. all "acme journals" are priced $5.50 but the only "PaperWorks journal" is priced $4.50).
