@@ -1,0 +1,86 @@
+All Around the World coding test for Perl
+
+The Synopsis
+============
+
+You need to read a CSV file named orders.csv, store the contents in an SQLite
+database and generate a report from the data. Aside from the requirement to
+use Perl and store the data in an SQLite database, you will have complete
+freedom to use the tools you're comfortable with.
+
+Most developers need one to four hours to complete the basic task, but will
+likely need a bit of extra time making it "production ready".
+
+The Details
+===========
+
+You have a client whose Point of Sale (POS) system has very poor reporting
+capabilities. She has sent you a CSV file of some orders. The CSV file
+contains:
+
+* customers (first name, last name, a customer "number")
+* orders (date and number)
+* items (name, price, manufacturer)
+
+She would like you to write software to parse the CSV file, store everything
+in an SQLite database and later generate a report of items purchased per
+order per customer per date. You can use any format you like for the report.
+The easier it is to read and understand, the better.
+
+Unfortunately, she will be gone for a week and she's instructed you to use
+your best judgement if you have any questions about the data or the task.
+
+Note: the customer has told you that when she returns, she will be using your
+code to enter more CSV files every day.
+
+Deliverables
+============
+
+The basic task will take most developers between one to four hours to complete
+(four hours, at outside). However, you should strive to produce code which is
+*production ready* (for whatever definition of "production ready" you feel
+comfortable with. This does *not* mean perfect -- we readily accept that no
+code is perfect. We have deadlines, unclear specifications (like this one),
+and other time constraints. Instead, we expect that you submit to us code
+that, while not perfect, is nonetheless an example of the minimum quality you
+feel appropriate for production code.
+
+What to send us
+---------------
+
+On or before one week of receiving this, you should return
+a tarball or zip file containing:
+
+* The code
+* The CSV file
+* An SQLite database with the data already entered
+* A README text document explaining how to build and run the project
+* A sample of the final report
+* A NOTES text document explaining any decisions you made which you feel are relevant
+
+The NOTES file
+--------------
+
+We will be using the NOTES file to understand how you make business and
+technical decisions and how you *communicate* those decisions. For example,
+there is a reference to "manufacturer" in the CSV file, but it is not required
+for the output report. Do you keep the manufacturer data or not? You should
+explain what decision you took and why you took it.
+
+Between the README and the NOTES and the code, we should be able to build, run
+and assess your project without further clarification from you. The final code
+will be run on either Mac OS X Mountain Lion or Debian Stable.
+
+What tools do you use?
+----------------------
+
+Anything! We want the code to be in Perl, but other than that, you're
+completely free to use anything you wish. The report can be in any format you
+wish: text, PDF, HTML, markdown, cuneiform tablets, whatever! Just keep in
+mind that if you use something that is hard to install or compile, that might
+make it harder for us to evaluate.
+
+In short, we want you to use any tools you feel comfortable with rather than
+give you an arbitrary set of tools you must use. We're checking to see if you
+can code, not whether or not you can use a set of tools we have already chosen
+for you.
