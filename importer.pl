@@ -4,6 +4,7 @@ use 5.014;
 use strict;
 use warnings;
 
+use Cwd 'abs_path';
 use Text::CSV;
 
 use AATW::Schema::Deploy;
@@ -18,6 +19,8 @@ sub do_import {
 		or die "Cannot use CSV: ".Text::CSV->error_diag ();
 
 	foreach my $filename (@ARGV) {
+		my $fullname = abs_path($filename);
+		say "Fullname=$fullname";
 		open my $fh, "<:encoding(utf8)", $filename
 			or die "$filename: $!";
 		
