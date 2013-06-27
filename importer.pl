@@ -3,6 +3,7 @@
 use 5.014;
 use strict;
 
+require DBIx::SQLite::Deploy;
 use Text::CSV;
 
 our @EXPECTED_COLUMN_HEADERS = qw(order_date customer_id customer_first_name customer_last_name order_number item_name item_manufacturer item_price);
@@ -38,9 +39,7 @@ sub do_import {
 
 
 
-sub deploy_dbmy $deployment = DBIx::SQLite::Deploy->deploy( '~/.orders.sqlite' => <<_DEPLOYMENT_SCRIPT_ )
-    [% PRIMARY_KEY = "INTEGER PRIMARY KEY AUTOINCREMENT" %]
-    [% CLEAR %]
+our $DB_SCHEMA = <<_DEPLOYMENT_SCRIPT_;
     ---
     PRAGMA foreign_keys = ON;
     ---
@@ -78,9 +77,34 @@ sub deploy_dbmy $deployment = DBIx::SQLite::Deploy->deploy( '~/.orders.sqlite' =
         FOREIGN KEY(item_id) REFERENCES items(id) NOT DEFERRABLE,
         UNIQUE (order_id, item_id)
 	);
+	---
 _DEPLOYMENT_SCRIPT_
+
+
+
+sub deploy_db {
+	my $deployment = DBIx::SQLite::Deploy->deploy( '/tmp/aatw.sqlite3', $DB_SCHEMA );
+	$deployment->deploy( { create => 1 } );
+
+	say $deployment->information();
+	return $deployment->connect;
 }
 
 
 
+deploy_db();
 do_import();
+
+
+
+package AATW::Model;
+use base qw/DBIx::Class::Schema/;
+__PACKAGE__->load_namespaces;
+
+
+
+package AATW::Model::Customer;
+use base qw/DBIx::Class::Core/;
+__PACKAGE__->table('customers');
+__PACKAGE__->add_columns(qw/ id alternate_id first_name last_name /);
+__PACKAGE__->set_primary_key('id');
