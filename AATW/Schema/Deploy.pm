@@ -63,9 +63,7 @@ _DEPLOYMENT_SCRIPT_
 
 	sub deploy_db {
         my $db_file = dirname(abs_path($0)) . '/aatw.sqlite3';
-        say "SQLite File=$db_file";
 		my $deployment = DBIx::SQLite::Deploy->deploy( $db_file, $DB_SCHEMA );
-		$deployment->deploy( { create => 1 } );
 
 		return AATW::Schema->connect( $deployment->information );
 	}

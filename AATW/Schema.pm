@@ -7,4 +7,5 @@ use warnings;
 use base 'DBIx::Class::Schema';
 
 __PACKAGE__->load_namespaces();
-say __PACKAGE__;
+
+1;

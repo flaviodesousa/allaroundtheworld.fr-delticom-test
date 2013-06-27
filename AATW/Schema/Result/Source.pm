@@ -11,4 +11,4 @@ __PACKAGE__->set_primary_key('id');
 __PACKAGE__->add_unique_constraint('unique_sources' => [qw(full_path_name)]);
 __PACKAGE__->has_many('item_prices', 'AATW::Schema::Result::ItemPrice', 'source_id');
 
-say __PACKAGE__;
+1;
