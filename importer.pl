@@ -42,35 +42,40 @@ sub deploy_dbmy $deployment = DBIx::SQLite::Deploy->deploy( '~/.orders.sqlite' =
     [% PRIMARY_KEY = "INTEGER PRIMARY KEY AUTOINCREMENT" %]
     [% CLEAR %]
     ---
-    CREATE TABLE customer (
-        id                  [% PRIMARY_KEY %],
+    PRAGMA foreign_keys = ON;
+    ---
+    CREATE TABLE customers (
+        id                  INTEGER PRIMARY KEY AUTOINCREMENT,
         alternate_id        TEXT NOT NULL,
         first_name          TEXT NOT NULL,
         last_name           TEXT NOT NULL,
         UNIQUE (alternate_id, first_name, last_name)
     );
     ---
-    CREATE TABLE order (
-        id                  [% PRIMARY_KEY %],
+    CREATE TABLE orders (
+        id                  INTEGER PRIMARY KEY AUTOINCREMENT,
         number              TEXT NOT NULL,
         date                DATE NOT NULL,
         time                TIME NOT NULL,
-        customer_id         INTEGER REFERENCES customer(id),
+        customer_id         INTEGER NOT NULL,
+        FOREIGN KEY(customer_id) REFERENCES customers(id) NOT DEFERRABLE,
         UNIQUE (number, date, time)
     );
     ---
-    CREATE TABLE item (
-        id                  [% PRIMARY_KEY %],
+    CREATE TABLE items (
+        id                  INTEGER PRIMARY KEY AUTOINCREMENT,
         name                TEXT NOT NULL,
         manufacturer        TEXT NOT NULL,
         UNIQUE (name, manufacturer)
     );
 	---
-	CREATE TABLE item_price (
-        id                  [% PRIMARY_KEY %],
+	CREATE TABLE item_prices (
+        id                  INTEGER PRIMARY KEY AUTOINCREMENT,
         price               NUMERIC NOT NULL,
-        order_id            INTEGER REFERENCES order(id),
-        item_id				INTEGER REFERENCES item(id),
+        order_id            INTEGER NOT NULL,
+        item_id             INTEGER NOT NULL,
+        FOREIGN KEY(order_id) REFERENCES orders(id) NOT DEFERRABLE,
+        FOREIGN KEY(item_id) REFERENCES items(id) NOT DEFERRABLE,
         UNIQUE (order_id, item_id)
 	);
 _DEPLOYMENT_SCRIPT_
