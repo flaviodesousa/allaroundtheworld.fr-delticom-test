@@ -23,6 +23,7 @@ Database Model
 
 - Date and time were split to make daily reporting easier;
 - Prices have their own table (that could also be called "OrderItem") since item prices may change among orders
+- No constraint for many same priced items for each order since this is a common real world case
 
 Inferred Rules
 --------------
