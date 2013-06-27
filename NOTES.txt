@@ -8,6 +8,7 @@ Steps were taken to avoid changing data coming from the CSV files. So the data c
 
 Examples:
 - "Chistina Rosetti" also appears as "Christina Roseti", although the former seems to be the correct one there is no fail proof rule for choosing one and discard the other. So both are being kept.
+- "John Davidson" appears with two different ids: "22" and "19". Both customers are being kept.
 
 Exceptions are:
 - spaces around field delimiters are discarded (e.g. ',John ,' is parsed as ',John,')
@@ -35,5 +36,5 @@ Questions for improving the application
 ---------------------------------------
 
 - How to handle customers with same id but different names?
+- How to handle customers with same name but different ids?
 - How to handle orders with same number but different date or time?
-- 
