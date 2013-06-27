@@ -8,6 +8,8 @@ use DBIx::SQLite::Deploy;
 use Cwd 'abs_path';
 use File::Basename;
 
+use AATW::Schema;
+
 {
 	my $DB_SCHEMA = <<_DEPLOYMENT_SCRIPT_;
     ---
@@ -15,8 +17,8 @@ use File::Basename;
     ---
     CREATE TABLE sources (
         id                  INTEGER PRIMARY KEY AUTOINCREMENT,
-        fullpath            TEXT NOT NULL,
-        UNIQUE (fullpath)
+        full_path_name      TEXT NOT NULL,
+        UNIQUE (full_path_name)
     );
     ---
     CREATE TABLE customers (
@@ -47,8 +49,10 @@ use File::Basename;
 	CREATE TABLE item_prices (
         id                  INTEGER PRIMARY KEY AUTOINCREMENT,
         price               NUMERIC NOT NULL,
+        source_id           INTEGER NOT NULL,
         order_id            INTEGER NOT NULL,
         item_id             INTEGER NOT NULL,
+        FOREIGN KEY(source_id) REFERENCES sources(id) NOT DEFERRABLE,
         FOREIGN KEY(order_id) REFERENCES orders(id) NOT DEFERRABLE,
         FOREIGN KEY(item_id) REFERENCES items(id) NOT DEFERRABLE
 	);
@@ -59,10 +63,10 @@ _DEPLOYMENT_SCRIPT_
 
 	sub deploy_db {
         my $db_file = dirname(abs_path($0)) . '/aatw.sqlite3';
-        say "File=$db_file";
+        say "SQLite File=$db_file";
 		my $deployment = DBIx::SQLite::Deploy->deploy( $db_file, $DB_SCHEMA );
 		$deployment->deploy( { create => 1 } );
 
-		return $deployment->connect;
+		return AATW::Schema::AATW->connect( $deployment->information );
 	}
 }
