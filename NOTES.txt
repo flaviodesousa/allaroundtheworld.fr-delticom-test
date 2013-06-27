@@ -6,6 +6,9 @@ General Sanitization and Handling of Inconsistencies
 
 Steps were taken to avoid changing data coming from the CSV files. So the data coming from the CSV file is autoritative even when suspicious inconsistencies arise. If, in the future, we get better heuristics on data sanitization, having all the data available will make it easier to fix the database.
 
+Examples:
+- "Chistina Rosetti" also appears as "Christina Roseti", although the former seems to be the correct one there is no fail proof rule for choosing one and discard the other. So both are being kept.
+
 Exceptions are:
 - spaces around field delimiters are discarded (e.g. ',John ,' is parsed as ',John,')
 - quotes around fields are discarded (e.g. '"pen, ball point"' is parsed as 'pen, ball point')
@@ -15,7 +18,21 @@ Manufacturer
 
 Although the "item manufacturer" field is not required for reporting it is being stored along the "item name" since the sample data suggests both fields form an identity (e.g. all "acme journals" are priced $5.50 but the only "PaperWorks journal" is priced $4.50).
 
-Database model
+Database Model
 --------------
 
-Date and time were split to make reporting easier
+- Date and time were split to make daily reporting easier;
+- Prices have their own table (that could also be called "OrderItem") since item prices may change among orders
+
+Inferred Rules
+--------------
+
+- Items may appear many times on each order, and with different prices.
+- Order numbers are being handled as strings because some have dashes and others don't.
+
+Questions for improving the application
+---------------------------------------
+
+- How to handle customers with same id but different names?
+- How to handle orders with same number but different date or time?
+- 
