@@ -67,6 +67,6 @@ _DEPLOYMENT_SCRIPT_
 		my $deployment = DBIx::SQLite::Deploy->deploy( $db_file, $DB_SCHEMA );
 		$deployment->deploy( { create => 1 } );
 
-		return AATW::Schema::AATW->connect( $deployment->information );
+		return AATW::Schema->connect( $deployment->information );
 	}
 }

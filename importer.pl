@@ -8,7 +8,7 @@ use Cwd 'abs_path';
 use Text::CSV;
 
 use AATW::Schema::Deploy;
-use AATW::Schema::AATW;
+use AATW::Schema;
 
 our @EXPECTED_COLUMN_HEADERS = qw(order_date customer_id customer_first_name customer_last_name order_number item_name item_manufacturer item_price);
 
