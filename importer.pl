@@ -49,21 +49,20 @@ sub do_import {
 		$csv->bind_columns( \@{$row_ref}{@col_names} );
 
 		while ( $csv->getline( $fh ) ) {
-			my $customer = AATW::Schema::Result::Customer->find_or_create($schema,
+			my $customer = $schema->resultset('Customer')->find_or_create(
 				{
 				alternate_id => $row_ref->{customer_id},
 				first_name => $row_ref->{customer_first_name},
 				last_name => $row_ref->{customer_last_name}
 				});
 			my ($date, $time) = split ' ', $row_ref->{order_date};
-			my $order = AATW::Schema::Result::Order->find_or_create($schema,
-				$customer,
+			my $order = $customer->orders->find_or_create(
 				{					
 				number => $row_ref->{order_number},
 				date => $date,
 				time => $time
 				});
-			my $item = AATW::Schema::Result::Item->find_or_create($schema,
+			my $item = $schema->resultset('Item')->find_or_create(
 				{
 				name => $row_ref->{item_name},
 				manufacturer => $row_ref->{item_manufacturer}
