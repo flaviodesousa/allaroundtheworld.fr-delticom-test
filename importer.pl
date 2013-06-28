@@ -30,7 +30,7 @@ sub input_file_already_imported {
 
 sub do_import {
     my $csv = Text::CSV->new( { binary => 1, allow_whitespace => 1 } )
-      or croak "Cannot use CSV: " . Text::CSV->error_diag();
+      or croak 'Cannot use CSV: ' . Text::CSV->error_diag();
 
     for my $filename (@ARGV) {
 
@@ -42,7 +42,7 @@ sub do_import {
           or croak "$fully_qualified_file_name: $!";
 
         # is the 1st line a valid header?
-        my @col_names = map { s/ /_/g; $_ } @{ $csv->getline($fh) };
+        my @col_names = map { s/ /_/gsm; $_ } @{ $csv->getline($fh) };
         if ( join( ',', @EXPECTED_COLUMN_HEADERS ) ne join( ',', @col_names ) )
         {
             warn
@@ -90,7 +90,7 @@ sub do_import {
                 }
             );
             my $price = $row_ref->{item_price};
-            $price =~ s/[^\d.]//g;
+            $price =~ s/[^\d.]//gsmx;
             $item->item_prices->create(
                 {
                     price     => $price,
@@ -100,7 +100,8 @@ sub do_import {
             );
         }
 
-        close $fh;
+        close $fh
+          or croak "$fully_qualified_file_name: $!";
 
         $csv->eof or $csv->error_diag();
     }
