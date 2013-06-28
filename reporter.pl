@@ -6,24 +6,29 @@ use warnings;
 
 use AATW::Schema::Deploy;
 use AATW::Schema;
+use AATW::Report::Text;
+
+our ($schema, $reporter);
 
 
 
 sub order_details {
-	my ($schema, $order_id) = @_;
+	my $order_id = shift;
 	my $order_items = $schema->resultset('ItemPrice')->search(
 		{
 			order_id => $order_id
 		});
 	while (my $item = $order_items->next) {
-		say '      Item: ', $item->item->name, '/', $item->item->manufacturer, ' Price: $', $item->price;
+		$reporter->item_price_line(
+			$item->item->name,
+			$item->price);
 	}
 }
 
 
 
 sub customer_totals_by_order {
-	my ($schema, $day, $customer_id) = @_;
+	my ($day, $customer_id) = @_;
 	my $by_orders = $schema->resultset('Order')->search(
 		{
 			date => $day,
@@ -41,15 +46,17 @@ sub customer_totals_by_order {
 			order_by => [ 'me.number' ]
 		});
 	while (my $order = $by_orders->next) {
-		say '    Order number ',$order->get_column('order_number'),' total: ',$order->get_column('total');
-		order_details($schema, $order->get_column('order_id'));
+		$reporter->order_header(
+			$order->get_column('order_number'),
+			$order->get_column('total'));
+		order_details($order->get_column('order_id'));
 	}
 }
 
 
 
 sub day_totals_by_customer {
-	my ($schema, $day) = @_;
+	my $day = shift;
 	my $by_customers = $schema->resultset('Order')->search(
 		{ date => $day },
 		{
@@ -65,16 +72,17 @@ sub day_totals_by_customer {
 			order_by => [ 'customer.last_name', 'customer.first_name ' ]
 		});
 	while (my $customer = $by_customers->next) {
-		say "  Customer=", $customer->get_column('first_name'), ' ', 
-			$customer->get_column('last_name'), ': ', $customer->get_column('total');
-		customer_totals_by_order($schema, $day, $customer->get_column('customer_id'));
+		$reporter->customer_header(
+			$customer->get_column('first_name'),
+			$customer->get_column('last_name'),
+			$customer->get_column('customer_id'),
+			$customer->get_column('total'));
+		customer_totals_by_order($day, $customer->get_column('customer_id'));
 	}
 }
 
 
 sub do_report {
-	my $schema = shift;
-
 	# totals by day
 	my $days = $schema->resultset('Order')->search(
 		{},
@@ -90,12 +98,18 @@ sub do_report {
 		});
 
 	while (my $day = $days->next) {
-		say "Day= ",$day->date," ",$day->get_column('total'),' Orders:',$day->get_column('order_count');
-		day_totals_by_customer($schema, $day->date);
+		$reporter->day_header(
+					$day->date, 
+					$day->get_column('order_count'), 
+					$day->get_column('total'));
+		#say "Day= ",$day->date," ",$day->get_column('total'),' Orders:',$day->get_column('order_count');
+		day_totals_by_customer($day->date);
 	}
 }
 
 
 
-my $schema = AATW::Schema::Deploy->deploy_db();
-do_report($schema);
+$schema = AATW::Schema::Deploy->deploy_db();
+$reporter = AATW::Report::Text->new();
+
+do_report;
