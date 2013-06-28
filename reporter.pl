@@ -17,6 +17,10 @@ sub order_details {
     my $order_items = $schema->resultset('ItemPrice')->search(
         {
             order_id => $order_id
+        },
+        {
+        	join     => [ 'item' ],
+        	order_by => [ 'item.name' ],
         }
     );
     while ( my $item = $order_items->next ) {
@@ -39,7 +43,7 @@ sub customer_totals_by_order {
             select => [ 'me.id', 'me.number', { sum => 'item_prices.price' } ],
             as     => [qw(order_id order_number total)],
             group_by => ['me.id'],
-            order_by => ['me.number']
+            order_by => ['me.number'],
         }
     );
     while ( my $order = $by_orders->next ) {
