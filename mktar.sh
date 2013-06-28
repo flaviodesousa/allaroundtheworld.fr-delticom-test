@@ -15,7 +15,7 @@ cd /tmp/aatw && (
 	./importer.pl ./orders.csv
 	./reporter.pl > ./sample.rpt
 	cd ..
-	tar Jcvf aatw.xz aatw
-	ls -l aatw.xz
+	tar Jcvf aatw.tar.xz aatw
+	ls -l aatw.tar.xz
 	)
 cd ~/dev/aatw
