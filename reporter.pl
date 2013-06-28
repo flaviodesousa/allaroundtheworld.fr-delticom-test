@@ -68,7 +68,7 @@ sub day_totals_by_customer {
         $reporter->customer_header(
             $customer->get_column('first_name'),
             $customer->get_column('last_name'),
-            $customer->get_column('customer_id'),
+            $customer->get_column('alternate_id'),
             $customer->get_column('total')
         );
         customer_totals_by_order( $day, $customer->get_column('customer_id') );
