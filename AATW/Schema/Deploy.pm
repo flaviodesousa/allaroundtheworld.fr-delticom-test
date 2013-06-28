@@ -13,7 +13,7 @@ use File::Basename;
 use AATW::Schema;
 
 {
-	my $DB_SCHEMA = <<'_DEPLOYMENT_SCRIPT_';
+    my $DB_SCHEMA = <<'_DEPLOYMENT_SCRIPT_';
     ---
     PRAGMA foreign_keys = ON;
     ---
@@ -61,14 +61,12 @@ use AATW::Schema;
 	---
 _DEPLOYMENT_SCRIPT_
 
+    sub deploy_db {
+        my $db_file = dirname( abs_path($0) ) . '/aatw.sqlite3';
+        my $deployment = DBIx::SQLite::Deploy->deploy( $db_file, $DB_SCHEMA );
 
-
-	sub deploy_db {
-        my $db_file = dirname(abs_path($0)) . '/aatw.sqlite3';
-		my $deployment = DBIx::SQLite::Deploy->deploy( $db_file, $DB_SCHEMA );
-
-		return AATW::Schema->connect( $deployment->information );
-	}
+        return AATW::Schema->connect( $deployment->information );
+    }
 }
 
 1;
