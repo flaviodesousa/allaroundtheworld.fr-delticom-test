@@ -19,8 +19,8 @@ sub order_details {
             order_id => $order_id
         },
         {
-        	join     => [ 'item' ],
-        	order_by => [ 'item.name' ],
+            join     => ['item'],
+            order_by => ['item.name'],
         }
     );
     while ( my $item = $order_items->next ) {
