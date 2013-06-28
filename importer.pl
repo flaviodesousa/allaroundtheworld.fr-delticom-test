@@ -14,15 +14,15 @@ our @EXPECTED_COLUMN_HEADERS = qw(order_date customer_id customer_first_name cus
 
 
 
-sub verify_if_source_file_not_yet_processed {
-	my ($schema, $fullname) = @_;
+sub input_file_already_imported {
+	my ($schema, $fully_qualified_file_name) = @_;
 	my $source_rs = $schema->resultset('Source');
-	my $source_data = {full_path_name => $fullname};
+	my $source_data = {full_path_name => $fully_qualified_file_name};
 	if ($source_rs->find($source_data)) {
-		warn "File \"$fullname\" already imported. Ignoring.\n";
-		return undef;
+		warn "File \"$fully_qualified_file_name\" already imported. Ignoring.\n";
+		return 1;
 	}
-	return $source_rs->create($source_data);
+	return undef;
 }
 
 
@@ -33,17 +33,22 @@ sub do_import {
 
 	foreach my $filename (@ARGV) {
 
-		my $source = verify_if_source_file_not_yet_processed($schema, abs_path($filename));
-		next unless $source;
+		my $fully_qualified_file_name = abs_path($filename);
 
-		open my $fh, "<:encoding(utf8)", $filename
-			or die "$filename: $!";
+		next if input_file_already_imported($schema, $fully_qualified_file_name);
+
+		open my $fh, "<:encoding(utf8)", $fully_qualified_file_name
+			or die "$fully_qualified_file_name: $!";
 		
 		# is the 1st line a valid header?
-		my @col_names = map { s/ /_/g; $_ } @{ $csv->getline( $fh ) };	
+		my @col_names = map { s/ /_/g; $_ } @{ $csv->getline( $fh ) };
 		if (join(',', @EXPECTED_COLUMN_HEADERS) ne join(',', @col_names)) {
-			die "$filename: malformed header, expected column headers not present.";
+			die "$fully_qualified_file_name: malformed header, expected column headers not present.\n";
 		}
+
+		my $source = $schema->resultset('Source')->find_or_create(
+			{full_path_name => $fully_qualified_file_name},
+			{key => 'unique_sources'});
 
 		my $row_ref = {};
 		$csv->bind_columns( \@{$row_ref}{@col_names} );
