@@ -51,7 +51,7 @@ sub customer_totals_by_order {
 }
 
 sub day_totals_by_customer {
-    my $day          = shift;
+    my $day = shift;
 
     # totals by customer for a given day
     my $by_customers = $schema->resultset('Order')->search(

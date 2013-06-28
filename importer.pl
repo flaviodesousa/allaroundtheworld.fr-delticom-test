@@ -40,12 +40,13 @@ sub do_import {
 
         next if input_file_already_imported($fully_qualified_file_name);
 
-        open my $fh, "<:encoding(utf8)", $fully_qualified_file_name
+        open my $fh, '<:encoding(utf8)', $fully_qualified_file_name
           or croak "$fully_qualified_file_name: $!";
 
         # is the 1st line a valid header?
         my @col_names = map { s/ /_/gsm; $_ } @{ $csv->getline($fh) };
-        if ( join( q/,/, @EXPECTED_COLUMN_HEADERS ) ne join( q/,/, @col_names ) )
+        if (
+            join( q(,), @EXPECTED_COLUMN_HEADERS ) ne join( q(,), @col_names ) )
         {
             warn
 "$fully_qualified_file_name: malformed header, expected column headers not present.\n";
