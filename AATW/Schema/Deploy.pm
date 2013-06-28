@@ -4,6 +4,8 @@ use 5.014;
 use strict;
 use warnings;
 
+our $VERSION = q(0.0.1);
+
 use DBIx::SQLite::Deploy;
 use Cwd 'abs_path';
 use File::Basename;
@@ -11,7 +13,7 @@ use File::Basename;
 use AATW::Schema;
 
 {
-	my $DB_SCHEMA = <<_DEPLOYMENT_SCRIPT_;
+	my $DB_SCHEMA = <<'_DEPLOYMENT_SCRIPT_';
     ---
     PRAGMA foreign_keys = ON;
     ---
@@ -68,3 +70,5 @@ _DEPLOYMENT_SCRIPT_
 		return AATW::Schema->connect( $deployment->information );
 	}
 }
+
+1;

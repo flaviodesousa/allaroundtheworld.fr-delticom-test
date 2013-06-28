@@ -4,6 +4,8 @@ use 5.014;
 use strict;
 use warnings;
 
+our $VERSION = q(0.0.1);
+
 use FileHandle;
 
 use Moose;
@@ -51,7 +53,7 @@ sub item_price_line {
 format ITEM_PRICE =
                     @>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> $ @######.##
 $name, $price
-.	
+.
 }
 
 1;

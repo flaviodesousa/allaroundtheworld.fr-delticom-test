@@ -5,6 +5,8 @@ use strict;
 use warnings;
 use base 'DBIx::Class::Core';
 
+our $VERSION = q(0.0.1);
+
 use AATW::Schema;
 
 __PACKAGE__->table('customers');

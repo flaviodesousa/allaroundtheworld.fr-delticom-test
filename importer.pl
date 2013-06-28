@@ -3,15 +3,17 @@
 use 5.014;
 use strict;
 use warnings;
-use Carp;
 
+our $VERSION = q(0.0.1);
+
+use Carp;
 use Cwd 'abs_path';
 use Text::CSV;
 
 use AATW::Schema::Deploy;
 use AATW::Schema;
 
-our ( $schema, @EXPECTED_COLUMN_HEADERS );
+my ( $schema, @EXPECTED_COLUMN_HEADERS );
 
 @EXPECTED_COLUMN_HEADERS =
   qw(order_date customer_id customer_first_name customer_last_name order_number item_name item_manufacturer item_price);
@@ -22,7 +24,7 @@ sub input_file_already_imported {
     my $source_data = { full_path_name => $fully_qualified_file_name };
     if ( $source_rs->find($source_data) ) {
         warn
-          "File \"$fully_qualified_file_name\" already imported. Ignoring.\n";
+          qq(File "$fully_qualified_file_name" already imported. Ignoring.\n);
         return 1;
     }
     return;
@@ -43,7 +45,7 @@ sub do_import {
 
         # is the 1st line a valid header?
         my @col_names = map { s/ /_/gsm; $_ } @{ $csv->getline($fh) };
-        if ( join( ',', @EXPECTED_COLUMN_HEADERS ) ne join( ',', @col_names ) )
+        if ( join( q/,/, @EXPECTED_COLUMN_HEADERS ) ne join( q/,/, @col_names ) )
         {
             warn
 "$fully_qualified_file_name: malformed header, expected column headers not present.\n";
@@ -69,7 +71,7 @@ sub do_import {
                     key => 'unique_customers'
                 }
             );
-            my ( $date, $time ) = split ' ', $row_ref->{order_date};
+            my ( $date, $time ) = split q( ), $row_ref->{order_date};
             my $order = $customer->orders->find_or_create(
                 {
                     number => $row_ref->{order_number},

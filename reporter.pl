@@ -4,11 +4,13 @@ use 5.014;
 use strict;
 use warnings;
 
+our $VERSION = q(0.0.1);
+
 use AATW::Schema::Deploy;
 use AATW::Schema;
 use AATW::Report::Text;
 
-our ( $schema, $reporter );
+my ( $schema, $reporter );
 
 sub order_details {
     my $order_id    = shift;
@@ -20,6 +22,7 @@ sub order_details {
     while ( my $item = $order_items->next ) {
         $reporter->item_price_line( $item->item->name, $item->price );
     }
+    return;
 }
 
 sub customer_totals_by_order {
@@ -44,6 +47,7 @@ sub customer_totals_by_order {
             $order->get_column('total') );
         order_details( $order->get_column('order_id') );
     }
+    return;
 }
 
 sub day_totals_by_customer {
@@ -73,6 +77,7 @@ sub day_totals_by_customer {
         );
         customer_totals_by_order( $day, $customer->get_column('customer_id') );
     }
+    return;
 }
 
 sub do_report {
@@ -102,6 +107,7 @@ sub do_report {
 
         day_totals_by_customer( $day->date );
     }
+    return;
 }
 
 $schema   = AATW::Schema::Deploy->deploy_db();
