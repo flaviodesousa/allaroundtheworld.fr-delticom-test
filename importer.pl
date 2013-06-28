@@ -51,21 +51,30 @@ sub do_import {
 		while ( $csv->getline( $fh ) ) {
 			my $customer = $schema->resultset('Customer')->find_or_create(
 				{
-				alternate_id => $row_ref->{customer_id},
-				first_name => $row_ref->{customer_first_name},
-				last_name => $row_ref->{customer_last_name}
+					alternate_id => $row_ref->{customer_id},
+					first_name => $row_ref->{customer_first_name},
+					last_name => $row_ref->{customer_last_name}
+				},
+				{
+					key => 'unique_customers'
 				});
 			my ($date, $time) = split ' ', $row_ref->{order_date};
 			my $order = $customer->orders->find_or_create(
 				{					
-				number => $row_ref->{order_number},
-				date => $date,
-				time => $time
+					number => $row_ref->{order_number},
+					date => $date,
+					time => $time
+				},
+				{
+					key => 'unique_orders'
 				});
 			my $item = $schema->resultset('Item')->find_or_create(
 				{
-				name => $row_ref->{item_name},
-				manufacturer => $row_ref->{item_manufacturer}
+					name => $row_ref->{item_name},
+					manufacturer => $row_ref->{item_manufacturer}
+				},
+				{
+					key => 'unique_items'
 				});
 			my $price = $row_ref->{item_price}; $price =~ s/[^\d.]//g;
 			$item->item_prices->create({
