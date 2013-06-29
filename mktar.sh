@@ -1,7 +1,7 @@
 #! /bin/sh
 
 cd ~/dev/aatw
-rm -rf /tmp/aatw -v
+rm -rf /tmp/aatw* -v
 [ -d /tmp/aatw ] || mkdir /tmp/aatw
 cp * /tmp/aatw -Rv
 cd /tmp/aatw && (
@@ -16,6 +16,7 @@ cd /tmp/aatw && (
 	./reporter.pl > ./sample.rpt
 	cd ..
 	tar Jcvf aatw.tar.xz aatw
-	ls -l aatw.tar.xz
+	zip -r aatw.zip aatw
+	ls -l aatw*
 	)
 cd ~/dev/aatw
