@@ -34,6 +34,9 @@ cpan sudo privileges):
 
     cpan install Text::CSV DBIx::Class::Schema DBIx::SQLite::Deploy
 
+Note: Running CPAN may require additional software installation such as
+      developer tools.
+
 Usage
 -----
 

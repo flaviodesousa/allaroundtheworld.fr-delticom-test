@@ -4,37 +4,72 @@ NOTES
 General Sanitization and Handling of Inconsistencies
 ----------------------------------------------------
 
-Steps were taken to avoid changing data coming from the CSV files. So the data coming from the CSV file is autoritative even when suspicious inconsistencies arise. If, in the future, we get better heuristics on data sanitization, having all the data available will make it easier to fix the database.
+Steps were taken to avoid changing data coming from the CSV files. So the 
+data coming from the CSV file is autoritative even when suspicious 
+inconsistencies arise. If, in the future, we get better heuristics on data 
+sanitization having all the data available will make it easier to fix the 
+database.
 
 Examples:
-- "Chistina Rosetti" also appears as "Christina Roseti", although the former seems to be the correct one there is no fail proof rule for choosing one and discard the other. So both are being kept.
-- "John Davidson" appears with two different ids: "22" and "19". Both customers are being kept.
+- "Chistina Rosetti" also appears as "Christina Roseti", although the former 
+  seems to be the correct one there is no fail proof rule for choosing one
+  and discarding the other. So both are being kept.
+- "John Davidson" appears with two different ids: "22" and "19". Both 
+  customers are being kept (a common real world same named people case).
 
 Exceptions are:
-- spaces around field delimiters are discarded (e.g. ',John ,' is parsed as ',John,')
-- quotes around fields are discarded (e.g. '"pen, ball point"' is parsed as 'pen, ball point')
+- spaces around field delimiters are discarded (e.g. ',John ,' is parsed
+  as ',John,')
+- quotes around fields are discarded (e.g. '"pen, ball point"' is parsed
+  as 'pen, ball point')
 
 Manufacturer
 ------------
 
-Although the "item manufacturer" field is not required for reporting it is being stored along the "item name" since the sample data suggests both fields form an identity (e.g. all "acme journals" are priced $5.50 but the only "PaperWorks journal" is priced $4.50).
+Although the "item manufacturer" field is not required for reporting it is 
+being stored along the "item name" since the sample data suggests both 
+fields form an identity (e.g. all "acme journals" are priced $5.50 but the 
+only "PaperWorks journal" is priced $4.50).
 
-Database Model
---------------
-
-- Date and time were split to make daily reporting easier;
-- Prices have their own table (that could also be called "OrderItem") since item prices may change among orders
-- No constraint for many same priced items for each order since this is a common real world case
 
 Inferred Rules
 --------------
 
 - Items may appear many times on each order, and with different prices.
-- Order numbers are being handled as strings because some have dashes and others don't.
+- Order numbers are being handled as strings because some have dashes and 
+  others don't.
 
-Questions for improving the application
----------------------------------------
+Functional questions for improving the application
+--------------------------------------------------
 
 - How to handle customers with same id but different names?
 - How to handle customers with same name but different ids?
-- How to handle orders with same number but different date or time?
+
+Database Model Implementation Decisions
+---------------------------------------
+
+- Date and time were split to make daily reporting easier;
+- Prices have their own table (that could also be called "OrderItem") since 
+  item prices may change among orders;
+- No constraint for many same priced items for each order since this is a 
+  common real world case;
+- For avoiding redundant imports each imported file name full path is stored
+  and associated with its underlying data. This also allows for easy 
+  discard of importing data, if desired.
+
+Code Implementation Decisions
+-----------------------------
+
+- The report uses the outdated format/write approach for reporting, which 
+  seemed adequate for this particular case. Using advanced templating with
+  HTML or PDF generation could be overkill. In case those features get
+  required an AATW::Report::Template Rule/Trait could be extracted from the
+  AATW::Report::Text and AATW::Report::PDF and/or AATW::Report::HTML could be created with low impact on the reporter.pl module;
+- The report uses a descending day order since usually the user wants to
+  check recent records first. A command line option may be added to allow
+  choosing of report start date.
+- For the sake of quicker delivery an explicit database schema generation 
+  was chosen over automatic schema generation. A change to automatic schema
+  generation is advisable for avoiding code duplication.
+
+*EOF*
