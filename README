@@ -1,12 +1,84 @@
-All Around the World coding test for Perl
+All Around the World coding test for Perl - Instructions
+========================================================
+
+Installation
+------------
 
 Installation instructions for the csv importer/reporter
 
-Security:
-- The SQLite database is created on the same directory of the main scripts, so the application needs write permission on this directory.
+Security notes:
+The SQLite database is created on the same directory of the main scripts, so the application needs write permission on this directory. If, after installing you removed write permission on the main directory you will need to add it back.
 
+This application was tested with perl 5.12.3. Please check with the command and output bellow if your version is this or newer.
+
+    $ perl -v
+	This is perl 5, version 12, subversion 3 (v5.12.3) built for darwin-thread-multi-2level
+	(with 2 registered patches, see perl -V for more detail)
+
+Install the CPAN modules bellow. If any question arises answer using the default.
 CPAN Modules:
 - DBIx::SQLite::Deploy
 - DBIx::Class::Schema
-- Text::CSV_XS
+- Text::CSV_XS (optional)
 - Text::CSV
+
+To install these modules you may use the cpan command bellow when running as superuser or prefixing the command with 'sudo' (in this case you will need cpan sudo privileges):
+
+    cpan install Text::CSV DBIx::Class::Schema DBIx::SQLite::Deploy
+
+Usage
+-----
+
+The application have two modules:
+- importer.pl -- imports .csv files into the database
+- reporter.pl -- generates consolidated order reports from the imported data
+
+importer.pl
+-----------
+
+The syntax for importer.pl is:
+
+	cd <directory where application is installed>
+    ./importer.pl <csv file 1> <csv file 2> ... <csv file n>
+
+Example, assuming application installed in ~/smith/aatw:
+
+	cd ~/smith/aatw
+	./importer ./orders.csv
+
+reporter.pl
+-----------
+
+The syntax for reporter.pl is:
+
+	cd <directory where application is installed>
+    ./reporter.pl
+
+The report is sent to the standard output (usually the screen). You may redirect it to another device (as a printer), to a file or pipe it to a viewer such as 'less'.
+
+Example, assuming application installed in ~/smith/aatw:
+
+	cd ~/smith/aatw
+	./reporter > sample.rpt
+
+or
+
+	cd ~/smith/aatw
+	./reporter | less
+
+Troubleshooting
+===============
+
+Error message:
+
+   File "/home/smith/aatw/orders.csv" already imported. Ignoring.
+
+This means a file this full name was already processed. To force it to be processed you may rename or move it to another directory.
+
+---
+
+Error message:
+
+   /home/smith/bad.txt: malformed header, expected column headers not present.
+
+This means the file does not have a header line as the sample .csv file, indicating a possible corrupt or invalid file. Note that after checking its header the file will be processed and corrupt lines may add bad data to the database.
