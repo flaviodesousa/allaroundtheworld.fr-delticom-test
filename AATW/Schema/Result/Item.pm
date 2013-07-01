@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use base 'DBIx::Class::Core';
 
-our $VERSION = q(0.0.1);
+our $VERSION = q(0.0.2);
 
 __PACKAGE__->table('items');
 __PACKAGE__->add_columns(qw/ id name manufacturer /);

@@ -4,7 +4,7 @@ use 5.012;
 use strict;
 use warnings;
 
-our $VERSION = q(0.0.1);
+our $VERSION = q(0.0.2);
 
 use Carp;
 use Cwd 'abs_path';
